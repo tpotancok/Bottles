@@ -9,3 +9,4 @@ pathvalidate==2.5.2
 FVS==0.3.4
 pycairo==1.23.0
 PyGObject==3.44.1
+dbus-next==0.2.3

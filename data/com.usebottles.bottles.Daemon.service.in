@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.usebottles.bottles.Daemon
+Exec=@libexecdir@/bottlesd

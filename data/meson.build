@@ -1,6 +1,9 @@
+libexecdir = join_paths(get_option('prefix'), get_option('libexecdir'))
+
 conf = configuration_data()
 conf.set('APP_ID', APP_ID)
 conf.set('APP_NAME', APP_NAME)
+conf.set('libexecdir', libexecdir)
 
 desktop_file = configure_file(
         input:  'com.usebottles.bottles.desktop.in.in',
@@ -72,4 +75,29 @@ install_data(
 install_data(
     join_paths('icons/symbolic/scalable/apps/bottles-steam-symbolic.svg'),
     install_dir: join_paths(get_option('prefix'), get_option('datadir'), 'icons/hicolor/symbolic/apps')
+)
+
+dbus_service_dir = dependency(
+    'dbus-1'
+).get_pkgconfig_variable(
+    'session_bus_services_dir',
+    define_variable: ['datadir', join_paths(get_option('prefix'), get_option('datadir'))]
+)
+
+etcdir = get_option('sysconfdir')
+
+configure_file(
+    input: 'com.usebottles.bottles.Daemon.desktop.in',
+    output: 'com.usebottles.bottles.Daemon.desktop',
+    configuration: conf,
+    install: true,
+    install_dir: join_paths(etcdir, 'xdg', 'autostart')
+)
+
+configure_file(
+    input: 'com.usebottles.bottles.Daemon.service.in',
+    output: 'com.usebottles.bottles.Daemon.service',
+    configuration: conf,
+    install: true,
+    install_dir: dbus_service_dir
 )
