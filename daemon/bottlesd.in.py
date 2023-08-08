@@ -14,7 +14,6 @@ class BottlesDaemon(ServiceInterface):
 
     @method()
     async def RunGuiCommand(self, args: "as") -> "s":
-        print("running gui command")
         import shlex
 
         cmd = shlex.join(["bottles"] + args)
@@ -22,20 +21,14 @@ class BottlesDaemon(ServiceInterface):
             cmd, stdout=aio.subprocess.PIPE, stderr=aio.subprocess.PIPE
         )
 
-        stdout, stderr = await proc.communicate()
-
-        print(f"[{cmd!r} exited with {proc.returncode}]")
+        stdout, _ = await proc.communicate()
         if stdout:
-            print(f"[stdout]\n{stdout.decode()}")
             return stdout.decode()
-        if stderr:
-            print(f"[stderr]\n{stderr.decode()}")
-            return stderr.decode()
-        return "no output"
+        else:
+            return ""
 
     @method()
     async def RunCommand(self, args: "as") -> "s":
-        print("running cli command")
         import shlex
 
         cmd = shlex.join(["bottles-cli"] + args)
@@ -43,16 +36,11 @@ class BottlesDaemon(ServiceInterface):
             cmd, stdout=aio.subprocess.PIPE, stderr=aio.subprocess.PIPE
         )
 
-        stdout, stderr = await proc.communicate()
-
-        print(f"[{cmd!r} exited with {proc.returncode}]")
+        stdout, _ = await proc.communicate()
         if stdout:
-            print(f"[stdout]\n{stdout.decode()}")
             return stdout.decode()
-        if stderr:
-            print(f"[stderr]\n{stderr.decode()}")
-            return stderr.decode()
-        return "no output"
+        else:
+            return ""
 
 
 async def main():
