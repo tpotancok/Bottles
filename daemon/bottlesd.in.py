@@ -2,7 +2,7 @@
 from dbus_next.aio import MessageBus
 from dbus_next.service import ServiceInterface, method
 
-import asyncio
+import asyncio as aio
 
 UID = "com.usebottles.bottles.Daemon"
 UID_AS_PATH = "/com/usebottles/bottles/Daemon"
@@ -13,26 +13,46 @@ class BottlesDaemon(ServiceInterface):
         super().__init__(UID)
 
     @method()
-    def RunCommand(self, arguments: "as") -> "s":
-        import subprocess
+    async def RunGuiCommand(self, args: "as") -> "s":
+        print("running gui command")
+        import shlex
 
-        result = subprocess.run(
-            ["bottles-cli"] + arguments, capture_output=True, text=True
+        cmd = shlex.join(["bottles"] + args)
+        proc = await aio.create_subprocess_shell(
+            cmd, stdout=aio.subprocess.PIPE, stderr=aio.subprocess.PIPE
         )
-        return result.stdout
+
+        stdout, stderr = await proc.communicate()
+
+        print(f"[{cmd!r} exited with {proc.returncode}]")
+        if stdout:
+            print(f"[stdout]\n{stdout.decode()}")
+            return stdout.decode()
+        if stderr:
+            print(f"[stderr]\n{stderr.decode()}")
+            return stderr.decode()
+        return "no output"
 
     @method()
-    def RunGuiCommand(self, arguments: "as") -> "s":
-        import subprocess
+    async def RunCommand(self, args: "as") -> "s":
+        print("running cli command")
+        import shlex
 
-        result = subprocess.run(["bottles"] + arguments, capture_output=True, text=True)
-        return result.stdout
+        cmd = shlex.join(["bottles-cli"] + args)
+        proc = await aio.create_subprocess_shell(
+            cmd, stdout=aio.subprocess.PIPE, stderr=aio.subprocess.PIPE
+        )
 
-    """
-    @method()
-    def hello(self, your_name: "s") -> "s":
-        return f"Hi there, {your_name}!"
-    """
+        stdout, stderr = await proc.communicate()
+
+        print(f"[{cmd!r} exited with {proc.returncode}]")
+        if stdout:
+            print(f"[stdout]\n{stdout.decode()}")
+            return stdout.decode()
+        if stderr:
+            print(f"[stderr]\n{stderr.decode()}")
+            return stderr.decode()
+        return "no output"
 
 
 async def main():
@@ -42,6 +62,7 @@ async def main():
     await bus.request_name(UID)
 
     await bus.wait_for_disconnect()
+    print("disconnected")
 
 
-asyncio.get_event_loop().run_until_complete(main())
+aio.run(main())

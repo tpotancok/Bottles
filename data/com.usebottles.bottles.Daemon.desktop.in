@@ -1,9 +1,9 @@
 [Desktop Entry]
 Name=com.usebottles.bottles.Daemon
 Comment=Daemon for Bottles
-Icon=com.usebottles.bottles.Daemon
+Icon=com.usebottles.bottles
 Exec=@libexecdir@/bottlesd
-X-GNOME-Autostart-Delay=10
 StartupNotify=false
 NoDisplay=true
 Type=Application
+BusName=com.usebottles.bottles.Daemon

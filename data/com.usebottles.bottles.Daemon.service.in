@@ -1,3 +1,4 @@
 [D-BUS Service]
 Name=com.usebottles.bottles.Daemon
-Exec=@libexecdir@/bottlesd
+Exec=/bin/false
+SystemdService=com.usebottles.bottles.Daemon.service

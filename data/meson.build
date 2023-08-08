@@ -91,7 +91,7 @@ configure_file(
     output: 'com.usebottles.bottles.Daemon.desktop',
     configuration: conf,
     install: true,
-    install_dir: join_paths(etcdir, 'xdg', 'autostart')
+    install_dir: join_paths(get_option('datadir'), 'applications')
 )
 
 configure_file(
