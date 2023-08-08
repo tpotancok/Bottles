@@ -13,10 +13,8 @@ class BottlesDaemon(ServiceInterface):
         super().__init__(UID)
 
     @method()
-    async def RunGuiCommand(self, args: "as") -> "s":
-        import shlex
-
-        cmd = shlex.join(["bottles"] + args)
+    async def RunGuiCommand(self, args: "s") -> "s":
+        cmd = "bottles" + args
         proc = await aio.create_subprocess_shell(
             cmd, stdout=aio.subprocess.PIPE, stderr=aio.subprocess.PIPE
         )
@@ -28,10 +26,8 @@ class BottlesDaemon(ServiceInterface):
             return ""
 
     @method()
-    async def RunCommand(self, args: "as") -> "s":
-        import shlex
-
-        cmd = shlex.join(["bottles-cli"] + args)
+    async def RunCommand(self, args: "s") -> "s":
+        cmd = "bottles-cli" + args
         proc = await aio.create_subprocess_shell(
             cmd, stdout=aio.subprocess.PIPE, stderr=aio.subprocess.PIPE
         )
